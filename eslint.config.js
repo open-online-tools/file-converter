@@ -89,6 +89,8 @@ export default [
       '.eslintcache',
       // Case study raw data files (downloaded from external sources)
       'docs/case-studies/*/data/**',
+      // Web app has its own ESLint config
+      'web/**',
     ],
   },
 ];

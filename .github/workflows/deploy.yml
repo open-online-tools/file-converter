@@ -1,0 +1,103 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'converter-wasm/**'
+      - 'web/**'
+      - '.github/workflows/deploy.yml'
+  pull_request:
+    types: [opened, synchronize, reopened]
+    paths:
+      - 'converter-wasm/**'
+      - 'web/**'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # ─── Build ───────────────────────────────────────────────────────────────
+  build:
+    name: Build WASM + React app
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # ── Rust toolchain ──
+      - name: Install Rust stable
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: wasm32-unknown-unknown
+
+      - name: Cache Rust build artefacts
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: converter-wasm
+
+      - name: Install wasm-pack
+        run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
+
+      # ── Run Rust unit tests (host target) ──
+      - name: Run Rust tests
+        run: cargo test --manifest-path converter-wasm/Cargo.toml
+
+      # ── Compile Rust → WASM ──
+      - name: Build WASM package
+        run: |
+          wasm-pack build converter-wasm \
+            --target web \
+            --out-dir ../web/src/wasm \
+            --release
+
+      # ── Node.js / web ──
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+          cache-dependency-path: web/package-lock.json
+
+      - name: Install web dependencies
+        run: npm ci
+        working-directory: web
+
+      - name: Run web tests
+        run: npm test
+        working-directory: web
+
+      - name: Build web app
+        run: npm run build
+        working-directory: web
+        env:
+          VITE_BASE: /file-converter/
+
+      - name: Upload Pages artefact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: web/dist
+
+  # ─── Deploy (main branch only) ──────────────────────────────────────────
+  deploy:
+    name: Deploy to GitHub Pages
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
