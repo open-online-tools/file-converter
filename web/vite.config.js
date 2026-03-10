@@ -13,6 +13,10 @@ export default defineConfig({
     assetsDir: 'assets',
   },
 
+  worker: {
+    format: 'es',
+  },
+
   // Allow the WASM file to be served correctly in dev mode
   server: {
     headers: {
