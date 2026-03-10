@@ -31,7 +31,11 @@
 
 .fill {
   height: 100%;
-  background: linear-gradient(90deg, var(--color-accent), var(--color-accent-light));
+  background: linear-gradient(
+    90deg,
+    var(--color-accent),
+    var(--color-accent-light)
+  );
   border-radius: 999px;
   transition: width 0.3s ease;
 }

@@ -12,7 +12,7 @@
  *   5. Result is shown with a preview and download button
  */
 
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { DropZone } from './components/DropZone.jsx';
 import { FormatPicker } from './components/FormatPicker.jsx';
 import { ProgressBar } from './components/ProgressBar.jsx';
@@ -22,7 +22,8 @@ import { useConverter } from './hooks/useConverter.js';
 import styles from './App.module.css';
 
 export default function App() {
-  const { wasmReady, convert, status, progress, result, error } = useConverter();
+  const { wasmReady, convert, status, progress, result, error } =
+    useConverter();
 
   // File state
   const [file, setFile] = useState(null);
@@ -74,7 +75,9 @@ export default function App() {
     <div className={styles.layout}>
       <header className={styles.header}>
         <div className={styles.headerInner}>
-          <span className={styles.logo} aria-hidden="true">⇄</span>
+          <span className={styles.logo} aria-hidden="true">
+            ⇄
+          </span>
           <h1 className={styles.title}>File Converter</h1>
           <span className={styles.badge}>On-device · Private · Free</span>
         </div>
@@ -88,7 +91,11 @@ export default function App() {
         <div className={styles.card}>
           {/* WASM loading state */}
           {!wasmReady && (
-            <div className={styles.wasmLoading} role="status" aria-live="polite">
+            <div
+              className={styles.wasmLoading}
+              role="status"
+              aria-live="polite"
+            >
               <span className={styles.spinner} aria-hidden="true" />
               Loading converter engine…
             </div>
@@ -103,7 +110,10 @@ export default function App() {
 
           {/* Step 2: Format selection + convert button */}
           {file && !isDone && (
-            <section className={styles.convertSection} aria-label="Conversion options">
+            <section
+              className={styles.convertSection}
+              aria-label="Conversion options"
+            >
               <div className={styles.fileInfo}>
                 <span className={styles.fileName} title={file.name}>
                   {file.name}
@@ -156,7 +166,9 @@ export default function App() {
                 <button
                   className={styles.convertBtn}
                   onClick={handleConvert}
-                  disabled={!wasmReady || !toFormat || targetFormats.length === 0}
+                  disabled={
+                    !wasmReady || !toFormat || targetFormats.length === 0
+                  }
                 >
                   {!wasmReady ? 'Loading engine…' : 'Convert'}
                 </button>
@@ -177,7 +189,9 @@ export default function App() {
 
         {/* Supported formats info */}
         <details className={styles.formatsDetails}>
-          <summary className={styles.formatsSummary}>Supported conversions</summary>
+          <summary className={styles.formatsSummary}>
+            Supported conversions
+          </summary>
           <div className={styles.formatsGrid}>
             {STATIC_PAIRS.map((p, i) => (
               <div key={i} className={styles.formatChip}>

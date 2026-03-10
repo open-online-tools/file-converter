@@ -7,3 +7,5 @@ package-lock.json
 CLAUDE.md
 # Case study raw data files (downloaded from external sources)
 docs/case-studies/*/data/
+# Rust build artifacts
+converter-wasm/target/

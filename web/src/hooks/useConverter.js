@@ -24,9 +24,12 @@ export function useConverter() {
 
   useEffect(() => {
     // Spawn the Web Worker
-    const worker = new Worker(new URL('./converter.worker.js', import.meta.url), {
-      type: 'module',
-    });
+    const worker = new Worker(
+      new URL('../converter.worker.js', import.meta.url),
+      {
+        type: 'module',
+      }
+    );
 
     worker.addEventListener('message', (event) => {
       const msg = event.data;
@@ -101,10 +104,17 @@ export function useConverter() {
           else reject(new Error(msg.error));
         };
 
-        workerRef.current.postMessage({ type: 'convert', id, input, from, to, options });
+        workerRef.current.postMessage({
+          type: 'convert',
+          id,
+          input,
+          from,
+          to,
+          options,
+        });
       });
     },
-    [wasmReady],
+    [wasmReady]
   );
 
   return { wasmReady, convert, status, progress, result, error };

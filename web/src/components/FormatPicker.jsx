@@ -5,7 +5,12 @@
 import { getLabel } from '../formats.js';
 import styles from './FormatPicker.module.css';
 
-export function FormatPicker({ fromFormat, toFormat, targetFormats, onToChange }) {
+export function FormatPicker({
+  fromFormat,
+  toFormat,
+  targetFormats,
+  onToChange,
+}) {
   return (
     <div className={styles.wrapper}>
       <div className={styles.field}>

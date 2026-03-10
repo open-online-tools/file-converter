@@ -15,7 +15,7 @@ export function DropZone({ onFile, accept }) {
     (file) => {
       if (file) onFile(file);
     },
-    [onFile],
+    [onFile]
   );
 
   const onDragOver = (e) => {

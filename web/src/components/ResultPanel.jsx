@@ -10,8 +10,7 @@ export function ResultPanel({ result, toFormat, originalFilename, onReset }) {
   const download = useCallback(() => {
     if (!result?.data) return;
 
-    const baseName =
-      originalFilename?.replace(/\.[^.]+$/, '') ?? 'converted';
+    const baseName = originalFilename?.replace(/\.[^.]+$/, '') ?? 'converted';
     const ext = getExtension(toFormat);
     const mime = result.mimeType || getMimeType(toFormat);
 
@@ -26,9 +25,14 @@ export function ResultPanel({ result, toFormat, originalFilename, onReset }) {
     URL.revokeObjectURL(url);
   }, [result, toFormat, originalFilename]);
 
-  const isImage = toFormat && ['png', 'jpeg', 'jpg', 'webp', 'bmp', 'gif', 'ico'].includes(toFormat);
-  const isText = result?.data &&
-    ['html', 'json', 'yaml', 'toml', 'csv', 'xml', 'markdown', 'md'].includes(toFormat);
+  const isImage =
+    toFormat &&
+    ['png', 'jpeg', 'jpg', 'webp', 'bmp', 'gif', 'ico'].includes(toFormat);
+  const isText =
+    result?.data &&
+    ['html', 'json', 'yaml', 'toml', 'csv', 'xml', 'markdown', 'md'].includes(
+      toFormat
+    );
 
   let previewContent = null;
   if (isImage && result?.data) {
@@ -47,7 +51,10 @@ export function ResultPanel({ result, toFormat, originalFilename, onReset }) {
     const text = new TextDecoder().decode(result.data);
     previewContent = (
       <pre className={styles.textPreview}>
-        <code>{text.slice(0, 2000)}{text.length > 2000 ? '\n…(truncated for preview)' : ''}</code>
+        <code>
+          {text.slice(0, 2000)}
+          {text.length > 2000 ? '\n…(truncated for preview)' : ''}
+        </code>
       </pre>
     );
   }
@@ -57,13 +64,13 @@ export function ResultPanel({ result, toFormat, originalFilename, onReset }) {
       <div className={styles.header}>
         <span className={styles.title}>Conversion complete</span>
         <span className={styles.size}>
-          {result?.data ? `${(result.data.byteLength / 1024).toFixed(1)} KB` : ''}
+          {result?.data
+            ? `${(result.data.byteLength / 1024).toFixed(1)} KB`
+            : ''}
         </span>
       </div>
 
-      {previewContent && (
-        <div className={styles.preview}>{previewContent}</div>
-      )}
+      {previewContent && <div className={styles.preview}>{previewContent}</div>}
 
       <div className={styles.actions}>
         <button className={styles.downloadBtn} onClick={download}>
